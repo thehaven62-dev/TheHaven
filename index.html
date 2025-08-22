@@ -3,211 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THE HAVENS | Smoothies</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>The Haven Smoothie Shop</title>
   <style>
-    /* Global Styles */
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family:'Inter', sans-serif; background:#fff; color:#000; display:flex; flex-direction:column; min-height:100vh; line-height:1.6; }
-    a { text-decoration:none; color:inherit; }
-    button { cursor:pointer; }
-
-    /* Header */
-    header { position:fixed; top:0; width:100%; padding:1rem 2rem; background:#fff; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 10px rgba(0,0,0,0.05); z-index:100; }
-    .site-name { font-weight:700; font-size:1.4rem; letter-spacing:1px; }
-    nav.desktop { display:flex; gap:1.5rem; }
-    nav.desktop a { font-weight:600; transition:color 0.3s; }
-    nav.desktop a:hover { color:#555; }
-
-    /* Hamburger Menu */
-    .hamburger { display:none; flex-direction:column; gap:4px; cursor:pointer; }
-    .hamburger div { width:25px; height:3px; background:#000; transition:0.3s; }
-    .hamburger.active div:nth-child(1){ transform:rotate(45deg) translate(5px,5px); }
-    .hamburger.active div:nth-child(2){ opacity:0; }
-    .hamburger.active div:nth-child(3){ transform:rotate(-45deg) translate(5px,-5px); }
-    nav.mobile { display:none; flex-direction:column; position:absolute; top:70px; right:2rem; background:#111; color:#fff; padding:1.5rem 2rem; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.5); opacity:0; pointer-events:none; transition:all 0.3s ease; }
-    nav.mobile.show { display:flex; opacity:1; pointer-events:auto; }
-    nav.mobile a { margin:1rem 0; font-weight:600; color:#fff; }
-    nav.mobile a:hover { color:#ffdd57; }
-
-    /* Hero Section */
-    .hero { display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; text-align:center; padding:120px 2rem 2rem; background:linear-gradient(135deg,#FFDEE9,#B5FFFC); }
-    .hero img { width:220px; margin-bottom:1rem; }
-    .hero h1 { font-size:2.5rem; font-weight:700; }
-    .hero p { font-size:1.2rem; margin:0.5rem 0 2rem; color:#333; }
-    .cta-button { padding:0.75rem 2rem; background:#000; color:#fff; border:none; border-radius:8px; font-weight:600; transition:0.3s; }
-    .cta-button:hover { background:#333; transform:scale(1.05); }
-
-    /* Products Grid */
-    .products { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:2rem; padding:4rem 2rem; max-width:1200px; margin:0 auto; }
-    .product-card { background:#f9f9f9; border-radius:12px; padding:1.5rem; text-align:center; opacity:0; transform:translateY(30px); transition:transform 0.3s, box-shadow 0.3s, opacity 0.6s; }
-    .product-card.visible { opacity:1; transform:translateY(0); }
-    .product-card:hover { transform:translateY(-8px); box-shadow:0 12px 24px rgba(0,0,0,0.12); }
-    .product-card img { width:100%; border-radius:12px; margin-bottom:1rem; object-fit:cover; transition:transform 0.3s; }
-    .product-card img:hover { transform:scale(1.05); }
-    .product-card h3 { font-weight:600; margin-bottom:0.5rem; }
-    .product-card p { margin-bottom:1rem; color:#555; }
-    .btn-add { padding:0.5rem 1.5rem; background:#000; color:#fff; border:none; border-radius:6px; transition:0.3s; }
-    .btn-add:hover { background:#333; transform:scale(1.05); }
-
-    /* Cart Drawer */
-    #cartDrawer { position:fixed; top:0; right:-100%; width:320px; height:100%; background:#111; color:#fff; z-index:200; padding:2rem 1.5rem; display:flex; flex-direction:column; box-shadow:-4px 0 20px rgba(0,0,0,0.5); transition:right 0.3s ease; }
-    #cartDrawer.show { right:0; }
-    #cartDrawer h2 { margin-bottom:1rem; }
-    #cartDrawer .cart-items { flex-grow:1; overflow-y:auto; }
-    .btn { border:none; border-radius:6px; padding:0.5rem 1rem; font-weight:600; cursor:pointer; }
-    .btn-close { background:#333; color:#fff; margin-bottom:1rem; }
-    .btn-checkout { background:#fff; color:#000; margin-top:1rem; }
-
-    /* Floating Cart Button */
-    #cartButton { position:fixed; bottom:1.5rem; right:1.5rem; width:60px; height:60px; background:#000; color:#fff; border:none; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:1.2rem; box-shadow:0 4px 15px rgba(0,0,0,0.2); z-index:150; }
-    #cartCount { position:absolute; top:-5px; right:-5px; width:18px; height:18px; border-radius:50%; background:red; color:#fff; font-size:0.8rem; display:flex; justify-content:center; align-items:center; }
-
-    /* Footer */
-    footer { margin-top:auto; padding:2rem; text-align:center; font-size:0.9rem; border-top:1px solid #e0e0e0; }
-    footer a { font-weight:600; }
-    footer a:hover { text-decoration:underline; }
-
-    /* Responsive */
-    @media(max-width:768px){ nav.desktop{display:none;} .hamburger{display:flex;} }
-    @media(max-width:600px){ .hero h1{font-size:2rem;} .hero p{font-size:1rem;} }
+    body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9; }
+    header { background:#333; color:#fff; padding:1rem; text-align:center; }
+    main { padding:1rem; max-width:800px; margin: auto; }
+    .product { display:flex; justify-content:space-between; margin:0.5rem 0; padding:0.5rem; background:#fff; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
+    .cart-btn { padding:0.5rem 1rem; background:#28a745; color:#fff; border:none; border-radius:4px; cursor:pointer; }
+    .cart-btn:hover { background:#218838; }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="site-name">THE HAVENS</div>
-  <nav class="desktop">
-    <a href="#">Home</a><a href="#">Shop</a><a href="#">About</a><a href="#">Contact</a>
-  </nav>
-  <div class="hamburger" id="hamburger"><div></div><div></div><div></div></div>
-  <nav class="mobile" id="mobileMenu">
-    <a href="#">Home</a><a href="#">Shop</a><a href="#">About</a><a href="#">Contact</a>
-  </nav>
+  <h1>The Haven Smoothie Shop</h1>
 </header>
 
-<section class="hero">
-  <img src="assets/logo.svg" alt="THE HAVENS Logo">
-  <h1>THE HAVENS</h1>
-  <p>Experience the best smoothies made with love.</p>
-  <button class="cta-button" onclick="document.getElementById('products-container').scrollIntoView({behavior:'smooth'})">Shop Now</button>
-</section>
-
-<section class="products" id="products-container"></section>
-
-<!-- Cart Drawer -->
-<div id="cartDrawer">
-  <button class="btn btn-close" onclick="closeCart()">Close</button>
-  <h2>Your Cart</h2>
-  <div class="cart-items" id="cartItems"></div>
-  <p id="cartTotal" style="font-weight:600; margin-top:1rem;">Total: R0</p>
-  <button class="btn btn-checkout" onclick="checkout()">Checkout</button>
-</div>
-
-<!-- Floating Cart Button -->
-<button id="cartButton">🛒<span id="cartCount">0</span></button>
-
-<form id="payfastForm" action="https://www.payfast.co.za/eng/process" method="post" style="display:none;">
-  <input type="hidden" name="merchant_id" id="pf_merchant_id" value="31451957">
-  <input type="hidden" name="merchant_key" id="pf_merchant_key" value="cqqlzwvvj84qr">
-  <input type="hidden" name="return_url" value="https://yourdomain.com/success">
-  <input type="hidden" name="cancel_url" value="https://yourdomain.com/cancel">
-  <input type="hidden" name="notify_url" value="https://yourdomain.com/notify">
-  <input type="hidden" name="m_payment_id" id="pf_payment_id" value="">
-  <input type="hidden" name="amount" id="pf_amount" value="">
-  <input type="hidden" name="item_name" id="pf_item_name" value="">
-</form>
-
-<footer>
-  <p>&copy; 2025 THE HAVENS. All rights reserved.</p>
-  <p>Developed by <strong><a href="https://blvckaesthetix.online" target="_blank">BlvckAesthetix</a></strong></p>
-</footer>
+<main>
+  <div id="products"></div>
+  <button onclick="checkout()" class="cart-btn">Checkout</button>
+</main>
 
 <script>
-  /* Mobile Menu */
-  const hamburger=document.getElementById('hamburger');
-  const mobileMenu=document.getElementById('mobileMenu');
-  hamburger.addEventListener('click',()=>{hamburger.classList.toggle('active');mobileMenu.classList.toggle('show');});
+  // Sample products
+  const products = [
+    { id:1, name:"Strawberry Smoothie", price:30 },
+    { id:2, name:"Mango Smoothie", price:35 },
+    { id:3, name:"Banana Smoothie", price:25 }
+  ];
 
-  /* Fade-in Products */
-  const observer=new IntersectionObserver(entries=>{ entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); }); },{threshold:0.2});
-  function observeProducts(){document.querySelectorAll('.product-card').forEach(c=>observer.observe(c));}
+  // Initialize cart from localStorage
+  let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-  /* Cart Logic */
-  const cartDrawer=document.getElementById('cartDrawer');
-  const cartButton=document.getElementById('cartButton');
-  const cartItemsContainer=document.getElementById('cartItems');
-  const cartTotalEl=document.getElementById('cartTotal');
-  const cartCountEl=document.getElementById('cartCount');
-  let cart=JSON.parse(localStorage.getItem('cart'))||[];
+  // Display products
+  const productsDiv = document.getElementById('products');
+  products.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'product';
+    div.innerHTML = `
+      <span>${p.name} - R${p.price}</span>
+      <button class="cart-btn" onclick="addToCart(${p.id})">Add to Cart</button>
+    `;
+    productsDiv.appendChild(div);
+  });
 
-  function updateCartCount(){cartCountEl.innerText=cart.length;}
-  function openCart(){renderCart();cartDrawer.classList.add('show');}
-  function closeCart(){cartDrawer.classList.remove('show');}
-  cartButton.addEventListener('click',openCart);
+  // Add to cart
+  function addToCart(id){
+    cart.push(id);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    alert('Added to cart!');
+  }
 
-  function renderCart(){
-    const products=JSON.parse(localStorage.getItem('productsData'))||[];
-    let html='', total=0;
-    if(cart.length===0){ html='<p>Your cart is empty.</p>'; }
-    else{
-      cart.forEach(id=>{
-        const product=products.find(p=>p.id===id);
-        if(product){
-          html+=`<div class="cart-row"><span>${product.name} - R${product.price}</span>
-                 <button onclick="removeFromCart(${product.id})" class="btn" style="background:red;color:#fff;">X</button></div>`;
-          total+=Number(product.price);
-        }
+  // Checkout function - calls Vercel backend
+  async function checkout(){
+    const items = cart.map(id => products.find(p => p.id === id));
+    if(items.length === 0) { alert("Your cart is empty!"); return; }
+
+    const total = items.reduce((sum,p) => sum + Number(p.price), 0).toFixed(2);
+    const itemNames = items.map(p => p.name).join(", ");
+
+    try {
+      const response = await fetch("/api/createPayment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ total, itemNames })
       });
+      const data = await response.json();
+      // Redirect to PayFast payment page
+      window.location.href = data.paymentUrl;
+    } catch(err){
+      console.error(err);
+      alert("Failed to initiate payment. Please try again.");
     }
-    cartItemsContainer.innerHTML=html;
-    cartTotalEl.innerText=`Total: R${total.toFixed(2)}`;
-    updateCartCount();
   }
-
-  function addToCart(id){ cart.push(id); localStorage.setItem('cart',JSON.stringify(cart)); renderCart(); alert('Product added!'); }
-  function removeFromCart(id){ cart=cart.filter(x=>x!==id); localStorage.setItem('cart',JSON.stringify(cart)); renderCart(); }
-
-  function checkout(){
-  const products = JSON.parse(localStorage.getItem('productsData')) || [];
-  const items = cart.map(id => products.find(p => p.id === id));
-  if(items.length === 0) { alert("Your cart is empty!"); return; }
-
-  const total = items.reduce((sum,p) => sum + Number(p.price), 0).toFixed(2);
-  const itemNames = items.map(p => p.name).join(", ");
-
-  document.getElementById('pf_merchant_id').value = '31451957';
-  document.getElementById('pf_merchant_key').value = 'cqqlzwvvj84qr';
-  document.getElementById('pf_payment_id').value = Date.now(); // unique order ID
-  document.getElementById('pf_amount').value = total;
-  document.getElementById('pf_item_name').value = itemNames;
-
-  document.getElementById('payfastForm').submit();
-}
-
-
-  /* Load Products */
-  function loadProducts(){
-    const container=document.getElementById('products-container');
-    const products=[
-      {id:1,name:'Mango Smoothie',price:35,image:'assets/mango.jpg'},
-      {id:2,name:'Berry Blast',price:40,image:'assets/berry.jpg'},
-      {id:3,name:'Green Detox',price:38,image:'assets/green.jpg'}
-    ];
-    localStorage.setItem('productsData',JSON.stringify(products));
-    container.innerHTML='';
-    products.forEach(p=>{
-      const card=document.createElement('div');
-      card.className='product-card';
-      card.innerHTML=`<img src="${p.image}" alt="${p.name}" loading="lazy">
-                      <h3>${p.name}</h3><p>R${p.price}</p>
-                      <button class="btn-add" onclick="addToCart(${p.id})">Add to Cart</button>`;
-      container.appendChild(card);
-    });
-    observeProducts(); updateCartCount();
-  }
-
-  loadProducts();
 </script>
+
 </body>
 </html>
