@@ -6,33 +6,27 @@
 <title>THE HAVENS | Smoothies</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  /* Global Styles */
   *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'Inter', sans-serif; background:#fff; color:#000; display:flex; flex-direction:column; min-height:100vh; line-height:1.6; }
+
   a { text-decoration:none; color:inherit; }
   button { cursor:pointer; border:none; outline:none; }
 
-  /* Header */
   header { position:fixed; top:0; width:100%; padding:1rem 2rem; background:#fff; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 10px rgba(0,0,0,0.05); z-index:100; }
   .site-name { font-weight:700; font-size:1.4rem; letter-spacing:1px; }
   nav.desktop { display:flex; gap:1.5rem; }
   nav.desktop a { font-weight:600; transition:color 0.3s; }
   nav.desktop a:hover { color:#555; }
-
-  /* Hamburger */
   .hamburger { display:none; flex-direction:column; gap:4px; cursor:pointer; }
   .hamburger div { width:25px; height:3px; background:#000; transition:0.3s; }
   .hamburger.active div:nth-child(1){ transform:rotate(45deg) translate(5px,5px); }
   .hamburger.active div:nth-child(2){ opacity:0; }
   .hamburger.active div:nth-child(3){ transform:rotate(-45deg) translate(5px,-5px); }
-
-  /* Mobile Nav */
   nav.mobile { display:none; flex-direction:column; position:absolute; top:70px; right:2rem; background:#111; color:#fff; padding:1.5rem 2rem; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.5); opacity:0; pointer-events:none; transition:all 0.3s ease; }
   nav.mobile.show { display:flex; opacity:1; pointer-events:auto; }
   nav.mobile a { margin:1rem 0; font-weight:600; color:#fff; transition:color 0.3s; }
   nav.mobile a:hover { color:#ffdd57; }
 
-  /* Hero */
   .hero { display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; text-align:center; padding:120px 2rem 2rem; background:linear-gradient(135deg,#FFDEE9,#B5FFFC); transition:all 0.3s; }
   .hero img { width:180px; max-width:50%; margin-bottom:1rem; }
   .hero h1 { font-size:2.5rem; font-weight:700; line-height:1.2; }
@@ -40,62 +34,146 @@
   .cta-button { padding:0.75rem 2rem; background:#000; color:#fff; border-radius:8px; font-weight:600; transition:0.3s; }
   .cta-button:hover { background:#333; transform:scale(1.05); }
 
-  /* Products Grid */
-  .products { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1.5rem; padding:4rem 1.5rem; max-width:1200px; margin:0 auto; }
-  .product-card { position:relative; background:#f9f9f9; border-radius:12px; padding:1rem; text-align:center; opacity:0; transform:translateY(20px); transition:transform 0.3s, box-shadow 0.3s, opacity 0.6s; overflow:hidden; }
-  .product-card.visible { opacity:1; transform:translateY(0); }
-  .product-card:hover { transform:translateY(-5px); box-shadow:0 12px 24px rgba(0,0,0,0.12); }
-  .product-card img { width:100%; border-radius:12px; margin-bottom:1rem; object-fit:cover; transition:transform 0.3s; }
-  .product-card img:hover { transform:scale(1.05); }
-  .product-card h3 { font-weight:600; margin-bottom:0.5rem; font-size:1.1rem; }
-  .product-card p.price { margin-bottom:1rem; color:#555; font-size:1rem; }
-  .btn-add { padding:0.5rem 1.2rem; background:#000; color:#fff; border-radius:6px; transition:0.3s; }
-  .btn-add:hover { background:#333; transform:scale(1.05); }
+  .section-title { font-size:1.8rem; font-weight:700; margin:2rem 1.5rem 1rem; color:#222; border-left:4px solid #FF5757; padding-left:0.5rem; }
 
-  /* Ingredients Tooltip */
-  .ingredients-tooltip {
-    position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); color:#fff; display:flex; justify-content:center; align-items:center; text-align:center;
-    opacity:0; transition:opacity 0.3s; padding:1rem; border-radius:12px; font-size:0.9rem; line-height:1.4;
-  }
-  .product-card:hover .ingredients-tooltip { opacity:1; }
+  /* Horizontal Scroll Sections */
+  .products-section-container { position:relative; }
+  .scroll-btn { position:absolute; top:50%; transform:translateY(-50%); background:#000; color:#fff; border-radius:50%; width:35px; height:35px; display:flex; justify-content:center; align-items:center; cursor:pointer; opacity:0.7; transition:0.3s; z-index:50; }
+  .scroll-btn:hover { opacity:1; }
+  .scroll-left { left:5px; }
+  .scroll-right { right:5px; }
 
-  /* Cart Drawer */
-  #cartDrawer { position:fixed; top:0; right:-100%; width:90%; max-width:360px; height:100%; background:#111; color:#fff; z-index:200; padding:2rem 1.5rem; display:flex; flex-direction:column; box-shadow:-4px 0 20px rgba(0,0,0,0.5); transition:right 0.3s ease; overflow-y:auto; }
-  #cartDrawer.show { right:0; }
-  #cartDrawer h2 { margin-bottom:1rem; font-size:1.5rem; }
-  #cartDrawer .cart-items { flex-grow:1; overflow-y:auto; margin-bottom:1rem; }
-  .btn { border:none; border-radius:6px; padding:0.5rem 1rem; font-weight:600; cursor:pointer; }
-  .btn-close { background:#333; color:#fff; margin-bottom:1rem; width:100%; }
-  .btn-checkout { background:#fff; color:#000; margin-top:1rem; width:100%; }
+  .products-section { display:flex; flex-wrap: nowrap; overflow-x: auto; gap:1rem; padding:1rem 1.5rem; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch; scroll-behavior:smooth; }
+  .products-section::-webkit-scrollbar{ display:none; }
 
-  /* Floating Cart Button */
-  #cartButton { position:fixed; bottom:1rem; right:1rem; width:55px; height:55px; background:#000; color:#fff; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:1.2rem; box-shadow:0 4px 15px rgba(0,0,0,0.2); z-index:150; }
-  #cartCount { position:absolute; top:-5px; right:-5px; width:18px; height:18px; border-radius:50%; background:red; color:#fff; font-size:0.8rem; display:flex; justify-content:center; align-items:center; }
+  /* Flip Card Styles */
+.product-card {
+  flex: 0 0 250px;
+  scroll-snap-align: start;
+  perspective: 1000px;
+  cursor: pointer;
+}
 
-  /* Footer */
-  footer { margin-top:auto; padding:2rem; text-align:center; font-size:0.9rem; border-top:1px solid #e0e0e0; }
-  footer a { font-weight:600; transition:0.3s; }
-  footer a:hover { text-decoration:underline; }
+.product-card-inner {
+  position: relative;
+  width: 100%;
+  min-height: 450px;
+  border-radius: 12px;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
 
-  /* Responsive */
-  @media(max-width:768px){ nav.desktop{display:none;} .hamburger{display:flex;} }
-  @media(max-width:600px){
-    .hero {padding:100px 1rem 2rem;}
-    .hero h1{font-size:2rem;}
-    .hero p{font-size:1rem;}
-    .products {display:flex; overflow-x:auto; gap:1rem; padding:2rem 1rem; scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;}
-    .products::-webkit-scrollbar{display:none;}
-    .product-card{flex:0 0 70%; scroll-snap-align:start;}
-    .product-card h3{font-size:1rem;}
-    .product-card p.price{font-size:0.9rem;}
-    #cartDrawer {padding:1.5rem;}
-  }
-  @media(max-width:400px){
-    .hero h1{font-size:1.6rem;} 
-    .hero p{font-size:0.9rem;}
-    #cartButton { width:50px; height:50px; font-size:1rem; }
-  }
-  input, textarea { width:100%; padding:0.5rem; margin-bottom:0.5rem; border-radius:6px; border:1px solid #ccc; }
+.product-card.flipped .product-card-inner {
+  transform: rotateY(180deg);
+}
+
+.product-card-front,
+.product-card-back {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.product-card-front {
+  background: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-card-front img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  transition: transform 0.3s;
+}
+
+.product-card-front img:hover {
+  transform: scale(1.05);
+}
+
+.product-card-front h3 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.product-card-front p.price {
+  margin-bottom: 1rem;
+  color: #555;
+  font-size: 1rem;
+}
+
+.btn-add {
+  padding: 0.5rem 1.2rem;
+  background: #000;
+  color: #fff;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.btn-add:hover {
+  background: #333;
+  transform: scale(1.05);
+}
+
+.product-card-back {
+  background: #333;
+  color: #fff;
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.product-card-back h3 {
+  margin-bottom: 0.5rem;
+}
+
+/* Cart Drawer */
+#cartDrawer { position:fixed; top:0; right:-100%; width:90%; max-width:360px; height:100%; background:#111; color:#fff; z-index:200; padding:2rem 1.5rem; display:flex; flex-direction:column; box-shadow:-4px 0 20px rgba(0,0,0,0.5); transition:right 0.3s ease; overflow-y:auto; }
+#cartDrawer.show { right:0; }
+#cartDrawer h2 { margin-bottom:1rem; font-size:1.5rem; }
+#cartDrawer .cart-items { flex-grow:1; overflow-y:auto; margin-bottom:1rem; }
+.btn { border:none; border-radius:6px; padding:0.5rem 1rem; font-weight:600; cursor:pointer; }
+.btn-close { background:#333; color:#fff; margin-bottom:1rem; width:100%; }
+.btn-checkout { background:#fff; color:#000; margin-top:1rem; width:100%; }
+
+#cartButton { position:fixed; bottom:1rem; right:1rem; width:55px; height:55px; background:#000; color:#fff; border-radius:50%; display:flex; justify-content:center; align-items:center; font-size:1.2rem; box-shadow:0 4px 15px rgba(0,0,0,0.2); z-index:150; }
+#cartCount { position:absolute; top:-5px; right:-5px; width:18px; height:18px; border-radius:50%; background:red; color:#fff; font-size:0.8rem; display:flex; justify-content:center; align-items:center; }
+
+footer { margin-top:auto; padding:2rem; text-align:center; font-size:0.9rem; border-top:1px solid #e0e0e0; }
+footer a { font-weight:600; transition:0.3s; }
+footer a:hover { text-decoration:underline; }
+
+@media(max-width:768px){ nav.desktop{display:none;} .hamburger{display:flex;} }
+@media(max-width:600px){
+  .hero {padding:100px 1rem 2rem;}
+  .hero h1{font-size:2rem;}
+  .hero p{font-size:1rem;}
+  .product-card {flex:0 0 80%; }
+  .product-card h3{font-size:1rem;}
+  .product-card p.price{font-size:0.9rem;}
+  #cartDrawer {padding:1.5rem;}
+}
+@media(max-width:400px){
+  .hero h1{font-size:1.6rem;} 
+  .hero p{font-size:0.9rem;}
+  #cartButton { width:50px; height:50px; font-size:1rem; }
+}
 </style>
 </head>
 <body>
@@ -105,8 +183,8 @@
   <nav class="desktop">
     <a href="#">Home</a><a href="#">Shop</a><a href="#">About</a><a href="#">Contact</a>
   </nav>
-  <div class="hamburger" id="hamburger"><div></div><div></div><div></div></div>
-  <nav class="mobile" id="mobileMenu">
+  <div class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false"><div></div><div></div><div></div></div>
+  <nav class="mobile" id="mobileMenu" aria-hidden="true">
     <a href="#">Home</a><a href="#">Shop</a><a href="#">About</a><a href="#">Contact</a>
   </nav>
 </header>
@@ -115,12 +193,23 @@
   <img src="assets/logo.svg" alt="THE HAVENS Logo">
   <h1>THE HAVENS</h1>
   <p>Where appetites are fed.</p>
-  <button class="cta-button" onclick="document.getElementById('products-container').scrollIntoView({behavior:'smooth'})">Shop Now</button>
+  <button class="cta-button" onclick="document.getElementById('smoothies-container').scrollIntoView({behavior:'smooth'})">Shop Now</button>
 </section>
 
-<section class="products" id="products-container"></section>
+<h2 class="section-title">Signature Smoothies</h2>
+<div class="products-section-container">
+  <div class="scroll-btn scroll-left" onclick="scrollSection('smoothies-container', -250)">&#8249;</div>
+  <section class="products-section" id="smoothies-container"></section>
+  <div class="scroll-btn scroll-right" onclick="scrollSection('smoothies-container', 250)">&#8250;</div>
+</div>
 
-<!-- Cart Drawer -->
+<h2 class="section-title">Snacks & Beverages</h2>
+<div class="products-section-container">
+  <div class="scroll-btn scroll-left" onclick="scrollSection('others-container', -250)">&#8249;</div>
+  <section class="products-section" id="others-container"></section>
+  <div class="scroll-btn scroll-right" onclick="scrollSection('others-container', 250)">&#8250;</div>
+</div>
+
 <div id="cartDrawer">
   <button class="btn btn-close" onclick="closeCart()">Close</button>
   <h2>Your Cart</h2>
@@ -143,7 +232,7 @@
   </form>
 </div>
 
-<button id="cartButton">🛒<span id="cartCount">0</span></button>
+<button id="cartButton" aria-label="Open Cart">🛒<span id="cartCount">0</span></button>
 
 <footer>
   <p>&copy; 2025 THE HAVENS. All rights reserved.</p>
@@ -157,6 +246,9 @@ const mobileMenu = document.getElementById('mobileMenu');
 hamburger.addEventListener('click', () => {
   hamburger.classList.toggle('active');
   mobileMenu.classList.toggle('show');
+  const expanded = hamburger.getAttribute('aria-expanded') === 'true';
+  hamburger.setAttribute('aria-expanded', !expanded);
+  mobileMenu.setAttribute('aria-hidden', expanded);
 });
 
 /* Cart Logic */
@@ -196,52 +288,66 @@ function renderCart() {
 function addToCart(id){ cart.push(id); localStorage.setItem('cart',JSON.stringify(cart)); renderCart(); alert('Product added!'); }
 function removeFromCart(id){ cart = cart.filter(x=>x!==id); localStorage.setItem('cart',JSON.stringify(cart)); renderCart(); }
 
+/* Scroll Buttons */
+function scrollSection(containerId, distance){
+  document.getElementById(containerId).scrollBy({ left: distance, behavior: 'smooth' });
+}
+
 /* Load Products */
-function loadProducts() {
-  const container = document.getElementById('products-container');
+const smoothies = [
+  {id:1, name:'Breakfast Zing', price:35, image:'assets/mango.jpg', ingredients:['Papaya','Orange','Lemon','Flakes','Water','Sugar']},
+  {id:2, name:'Berry Boom', price:40, image:'assets/berry.jpg', ingredients:['Strawberry','Blueberry','Cream','Almond Milk','Sugar']},
+  {id:3, name:'Crunch Mode Activated (CMA)', price:38, image:'assets/green.jpg', ingredients:['Banana','Apple','Almond Milk','Flakes','Sugar','Papaya']},
+  {id:4, name:'Fruitastic', price:35, image:'assets/fruitastic.jpg', ingredients:['Banana','Apple','Milk','Flakes','Sugar']},
+  {id:5, name:'Mix Masters', price:37, image:'assets/mixmasters.jpg', ingredients:['Lemon','Orange','Grapefruit','Ginger','Pineapple','Banana','Water']},
+  {id:6, name:'Mixed Emotions', price:42, image:'assets/mixedemotions.jpg', ingredients:['Banana','Berry Mix','Apple','Pear']},
+  {id:7, name:'Tropical Sunrise Blend', price:40, image:'assets/tropical.jpg', ingredients:['Pineapple','Mango','Coconut Water','Citrus']}
+];
 
-  const products = [
-    {id:1, name:'Breakfast Zing', price:35, image:'assets/mango.jpg', ingredients:['Papaya','Orange','Lemon','Flakes','Water','Sugar']},
-    {id:2, name:'Berry Boom', price:40, image:'assets/berry.jpg', ingredients:['Strawberry','Blueberry','Cream','Almond Milk','Sugar']},
-    {id:3, name:'Crunch Mode Activated (CMA)', price:38, image:'assets/green.jpg', ingredients:['Banana','Apple','Almond Milk','Flakes','Sugar','Papaya']},
-    {id:4, name:'Fruitastic', price:35, image:'assets/fruitastic.jpg', ingredients:['Banana','Apple','Milk','Flakes','Sugar']},
-    {id:5, name:'Mix Masters', price:37, image:'assets/mixmasters.jpg', ingredients:['Lemon','Orange','Grapefruit','Ginger','Pineapple','Banana','Water']},
-    {id:6, name:'Mixed Emotions', price:42, image:'assets/mixedemotions.jpg', ingredients:['Banana','Berry Mix','Apple','Pear']},
-    {id:7, name:'Tropical Sunrise Blend', price:40, image:'assets/tropical.jpg', ingredients:['Pineapple','Mango','Coconut Water','Citrus']},
-    {id:101, name:'Wraps', price:25, image:'assets/wraps.jpg', ingredients:['Tortilla','Chicken','Lettuce','Cheese']},
-    {id:102, name:'Chips', price:15, image:'assets/chips.jpg', ingredients:['Potatoes','Salt','Oil']},
-    {id:103, name:'Wings', price:45, image:'assets/wings.jpg', ingredients:['Chicken Wings','Spices','BBQ Sauce']},
-    {id:104, name:'Pap & Meat', price:50, image:'assets/papmeat.jpg', ingredients:['Maize Meal','Beef','Tomato Sauce']},
-    {id:105, name:'Sides', price:20, image:'assets/sides.jpg', ingredients:['Mixed Veggies','Sauces']},
-    {id:106, name:'Mojito', price:30, image:'assets/mojito.jpg', ingredients:['Mint','Lime','Sugar','Soda Water']},
-    {id:107, name:'Iced Tea', price:25, image:'assets/icedtea.jpg', ingredients:['Tea','Sugar','Lemon']}
-  ];
+const others = [
+  {id:101, name:'Wraps', price:25, image:'assets/wraps.jpg', ingredients:['Tortilla','Chicken','Lettuce','Cheese']},
+  {id:102, name:'Chips', price:15, image:'assets/chips.jpg', ingredients:['Potatoes','Salt','Oil']},
+  {id:103, name:'Wings', price:45, image:'assets/wings.jpg', ingredients:['Chicken Wings','Spices','BBQ Sauce']},
+  {id:104, name:'Pap & Meat', price:50, image:'assets/papmeat.jpg', ingredients:['Maize Meal','Beef','Tomato Sauce']},
+  {id:105, name:'Sides', price:20, image:'assets/sides.jpg', ingredients:['Mixed Veggies','Sauces']},
+  {id:106, name:'Mojito', price:30, image:'assets/mojito.jpg', ingredients:['Mint','Lime','Sugar','Soda Water']},
+  {id:107, name:'Iced Tea', price:25, image:'assets/icedtea.jpg', ingredients:['Tea','Sugar','Lemon']}
+];
 
-  localStorage.setItem('productsData', JSON.stringify(products));
+localStorage.setItem('productsData', JSON.stringify([...smoothies,...others]));
 
+function renderProducts(products, containerId) {
+  const container = document.getElementById(containerId);
   container.innerHTML = '';
   products.forEach(p => {
     const card = document.createElement('div');
-    card.className = 'product-card visible';
+    card.className='product-card';
     card.innerHTML = `
-      <img src="${p.image}" alt="${p.name}" loading="lazy">
-      <h3>${p.name}</h3>
-      <p class="price">R${p.price}</p>
-      <div class="ingredients-tooltip">Ingredients: ${p.ingredients.join(', ')}</div>
-      <button class="btn-add" onclick="addToCart(${p.id})">Add to Cart</button>
-    `;
+      <div class="product-card-inner">
+        <div class="product-card-front">
+          <img src="${p.image}" alt="${p.name}" loading="lazy">
+          <h3>${p.name}</h3>
+          <p class="price">R${p.price}</p>
+          <button class="btn-add" onclick="event.stopPropagation(); addToCart(${p.id})">Add to Cart</button>
+        </div>
+        <div class="product-card-back">
+          <h3>Ingredients</h3>
+          <p>${p.ingredients.join(', ')}</p>
+        </div>
+      </div>`;
+    card.addEventListener('click', ()=>card.classList.toggle('flipped'));
     container.appendChild(card);
   });
-
-  updateCartCount();
 }
 
-loadProducts();
-
+renderProducts(smoothies,'smoothies-container');
+renderProducts(others,'others-container');
+updateCartCount();
 
 /* Checkout Form */
 function showCheckoutForm() {
-  document.getElementById("checkoutForm").style.display = "block";
+  const form = document.getElementById("checkoutForm");
+  form.style.display = "block";
   const products = JSON.parse(localStorage.getItem("productsData")) || [];
   const cartData = JSON.parse(localStorage.getItem("cart")) || [];
   const summary = cartData.map(id => {
@@ -279,3 +385,4 @@ document.getElementById("checkoutForm").addEventListener("submit", function(e) {
 </script>
 </body>
 </html>
+
