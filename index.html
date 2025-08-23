@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -42,15 +42,22 @@
 
   /* Products Grid */
   .products { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:1.5rem; padding:4rem 1.5rem; max-width:1200px; margin:0 auto; }
-  .product-card { background:#f9f9f9; border-radius:12px; padding:1rem; text-align:center; opacity:0; transform:translateY(20px); transition:transform 0.3s, box-shadow 0.3s, opacity 0.6s; }
+  .product-card { position:relative; background:#f9f9f9; border-radius:12px; padding:1rem; text-align:center; opacity:0; transform:translateY(20px); transition:transform 0.3s, box-shadow 0.3s, opacity 0.6s; overflow:hidden; }
   .product-card.visible { opacity:1; transform:translateY(0); }
   .product-card:hover { transform:translateY(-5px); box-shadow:0 12px 24px rgba(0,0,0,0.12); }
   .product-card img { width:100%; border-radius:12px; margin-bottom:1rem; object-fit:cover; transition:transform 0.3s; }
   .product-card img:hover { transform:scale(1.05); }
   .product-card h3 { font-weight:600; margin-bottom:0.5rem; font-size:1.1rem; }
-  .product-card p { margin-bottom:1rem; color:#555; font-size:1rem; }
+  .product-card p.price { margin-bottom:1rem; color:#555; font-size:1rem; }
   .btn-add { padding:0.5rem 1.2rem; background:#000; color:#fff; border-radius:6px; transition:0.3s; }
   .btn-add:hover { background:#333; transform:scale(1.05); }
+
+  /* Ingredients Tooltip */
+  .ingredients-tooltip {
+    position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); color:#fff; display:flex; justify-content:center; align-items:center; text-align:center;
+    opacity:0; transition:opacity 0.3s; padding:1rem; border-radius:12px; font-size:0.9rem; line-height:1.4;
+  }
+  .product-card:hover .ingredients-tooltip { opacity:1; }
 
   /* Cart Drawer */
   #cartDrawer { position:fixed; top:0; right:-100%; width:90%; max-width:360px; height:100%; background:#111; color:#fff; z-index:200; padding:2rem 1.5rem; display:flex; flex-direction:column; box-shadow:-4px 0 20px rgba(0,0,0,0.5); transition:right 0.3s ease; overflow-y:auto; }
@@ -80,7 +87,7 @@
     .products::-webkit-scrollbar{display:none;}
     .product-card{flex:0 0 70%; scroll-snap-align:start;}
     .product-card h3{font-size:1rem;}
-    .product-card p{font-size:0.9rem;}
+    .product-card p.price{font-size:0.9rem;}
     #cartDrawer {padding:1.5rem;}
   }
   @media(max-width:400px){
@@ -107,7 +114,7 @@
 <section class="hero">
   <img src="assets/logo.svg" alt="THE HAVENS Logo">
   <h1>THE HAVENS</h1>
-  <p>Where appetities are fed.</p>
+  <p>Where appetites are fed.</p>
   <button class="cta-button" onclick="document.getElementById('products-container').scrollIntoView({behavior:'smooth'})">Shop Now</button>
 </section>
 
@@ -120,7 +127,6 @@
   <div class="cart-items" id="cartItems"></div>
   <p id="cartTotal" style="font-weight:600; margin-top:1rem;">Total: R0</p>
   <p style="font-weight:600; margin-top:1rem;">Pay to Account: 10256356384 Standard Bank</p>
-
   <button class="btn btn-checkout" onclick="showCheckoutForm()">Checkout</button>
 
   <form id="checkoutForm" action="https://formspree.io/f/mkgzdyeq" method="POST" style="display:none; margin-top:1rem;">
@@ -191,26 +197,47 @@ function addToCart(id){ cart.push(id); localStorage.setItem('cart',JSON.stringif
 function removeFromCart(id){ cart = cart.filter(x=>x!==id); localStorage.setItem('cart',JSON.stringify(cart)); renderCart(); }
 
 /* Load Products */
-function loadProducts(){
+function loadProducts() {
   const container = document.getElementById('products-container');
+
   const products = [
-    {id:1,name:'Mango Smoothie',price:35,image:'assets/mango.jpg'},
-    {id:2,name:'Berry Blast',price:40,image:'assets/berry.jpg'},
-    {id:3,name:'Green Detox',price:38,image:'assets/green.jpg'}
+    {id:1, name:'Breakfast Zing', price:35, image:'assets/mango.jpg', ingredients:['Papaya','Orange','Lemon','Flakes','Water','Sugar']},
+    {id:2, name:'Berry Boom', price:40, image:'assets/berry.jpg', ingredients:['Strawberry','Blueberry','Cream','Almond Milk','Sugar']},
+    {id:3, name:'Crunch Mode Activated (CMA)', price:38, image:'assets/green.jpg', ingredients:['Banana','Apple','Almond Milk','Flakes','Sugar','Papaya']},
+    {id:4, name:'Fruitastic', price:35, image:'assets/fruitastic.jpg', ingredients:['Banana','Apple','Milk','Flakes','Sugar']},
+    {id:5, name:'Mix Masters', price:37, image:'assets/mixmasters.jpg', ingredients:['Lemon','Orange','Grapefruit','Ginger','Pineapple','Banana','Water']},
+    {id:6, name:'Mixed Emotions', price:42, image:'assets/mixedemotions.jpg', ingredients:['Banana','Berry Mix','Apple','Pear']},
+    {id:7, name:'Tropical Sunrise Blend', price:40, image:'assets/tropical.jpg', ingredients:['Pineapple','Mango','Coconut Water','Citrus']},
+    {id:101, name:'Wraps', price:25, image:'assets/wraps.jpg', ingredients:['Tortilla','Chicken','Lettuce','Cheese']},
+    {id:102, name:'Chips', price:15, image:'assets/chips.jpg', ingredients:['Potatoes','Salt','Oil']},
+    {id:103, name:'Wings', price:45, image:'assets/wings.jpg', ingredients:['Chicken Wings','Spices','BBQ Sauce']},
+    {id:104, name:'Pap & Meat', price:50, image:'assets/papmeat.jpg', ingredients:['Maize Meal','Beef','Tomato Sauce']},
+    {id:105, name:'Sides', price:20, image:'assets/sides.jpg', ingredients:['Mixed Veggies','Sauces']},
+    {id:106, name:'Mojito', price:30, image:'assets/mojito.jpg', ingredients:['Mint','Lime','Sugar','Soda Water']},
+    {id:107, name:'Iced Tea', price:25, image:'assets/icedtea.jpg', ingredients:['Tea','Sugar','Lemon']}
   ];
-  localStorage.setItem('productsData',JSON.stringify(products));
-  container.innerHTML='';
-  products.forEach(p=>{
+
+  localStorage.setItem('productsData', JSON.stringify(products));
+
+  container.innerHTML = '';
+  products.forEach(p => {
     const card = document.createElement('div');
-    card.className='product-card visible';
-    card.innerHTML = `<img src="${p.image}" alt="${p.name}" loading="lazy">
-                      <h3>${p.name}</h3><p>R${p.price}</p>
-                      <button class="btn-add" onclick="addToCart(${p.id})">Add to Cart</button>`;
+    card.className = 'product-card visible';
+    card.innerHTML = `
+      <img src="${p.image}" alt="${p.name}" loading="lazy">
+      <h3>${p.name}</h3>
+      <p class="price">R${p.price}</p>
+      <div class="ingredients-tooltip">Ingredients: ${p.ingredients.join(', ')}</div>
+      <button class="btn-add" onclick="addToCart(${p.id})">Add to Cart</button>
+    `;
     container.appendChild(card);
   });
+
   updateCartCount();
 }
+
 loadProducts();
+
 
 /* Checkout Form */
 function showCheckoutForm() {
